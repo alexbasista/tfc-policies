@@ -1,0 +1,79 @@
+
+# This policy ensures that:
+# 1. A module named "tagging" is present in the configuration
+# 2. The tagging module is sourced from the approved private registry
+# 3. The AWS provider uses default_tags that reference the tagging module output
+# This enforces consistent tagging across all AWS resources.
+
+import "tfconfig/v2" as tfconfig
+
+# Define the required module name, source, and output (update these to your actual values)
+param required_module_name default "tagging_module_call"
+param required_module_output default "module_tag_outputs"
+param required_tagging_source default "./modules/tagging"
+
+# Check if required tagging module exists
+tagging_module_exists = required_module_name in keys(tfconfig.module_calls)
+
+# Check if tagging module has correct source
+tagging_module_has_correct_source = func() {
+	if tagging_module_exists {
+		return tfconfig.module_calls[required_module_name].source == required_tagging_source
+	}
+	return false
+}
+
+# Get AWS provider configuration
+aws_providers = filter tfconfig.providers as _, p {
+	p.name == "aws"
+}
+
+# Check if AWS provider has default_tags configured with tagging module reference
+aws_provider_has_tagging = func() {
+	if length(aws_providers) == 0 {
+		return false
+	}
+	
+	for aws_providers as _, provider {
+		if "default_tags" in keys(provider.config) {
+			for provider.config.default_tags as _, default_tag_block {
+				if "tags" in keys(default_tag_block) {
+					if "references" in keys(default_tag_block.tags) {
+						for default_tag_block.tags.references as _, ref {
+							if ref == "module." + required_module_name + "." + required_module_output {
+								return true
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return false
+}
+
+# Validation checks
+violations = []
+
+if not tagging_module_exists {
+	append(violations, "Missing required '" + required_module_name + "' module in configuration")
+} else if not tagging_module_has_correct_source() {
+	append(violations, "Module '" + required_module_name + "' must be sourced from: " + required_tagging_source + " (currently using: " + tfconfig.module_calls[required_module_name].source + ")")
+}
+
+if not aws_provider_has_tagging() {
+	append(violations, "AWS provider must use 'default_tags' with 'tags = module." + required_module_name + "." + required_module_output + "'")
+}
+
+# Print violations if any
+if length(violations) > 0 {
+	print("Tagging policy violations found:")
+	for violations as violation {
+		print(" - " + violation)
+	}
+}
+
+# Main rule
+main = rule {
+	tagging_module_exists and tagging_module_has_correct_source() and aws_provider_has_tagging()
+}
