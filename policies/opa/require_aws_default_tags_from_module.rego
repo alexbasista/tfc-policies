@@ -9,7 +9,7 @@ package terraform.policies.tagging
 
 import input.plan as plan
 
-# Policy parameters (update this values accordingly)
+# Policy parameters (update these values accordingly)
 required_module_name := "tagging_module_call"
 required_module_output := "tagging_module_outputs"
 required_tagging_source := "./modules/tagging"
