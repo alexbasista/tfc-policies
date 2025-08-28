@@ -12,7 +12,7 @@ import input.plan as plan
 # Policy parameters (update these values accordingly)
 required_module_name := "tagging_module_call"
 required_module_output := "tagging_module_outputs"
-required_tagging_source := "./modules/tagging"
+required_module_source := "./modules/tagging"
 
 # Check if required tagging module exists
 tagging_module_exists {
@@ -22,7 +22,7 @@ tagging_module_exists {
 # Check if tagging module has correct source
 tagging_module_has_correct_source {
     module := plan.configuration.root_module.module_calls[required_module_name]
-    module.source == required_tagging_source
+    module.source == required_module_source
 }
 
 # Check if AWS provider has default_tags configured with tagging module reference
@@ -41,7 +41,7 @@ violations[msg] {
     tagging_module_exists
     not tagging_module_has_correct_source
     actual_source := plan.configuration.root_module.module_calls[required_module_name].source
-    msg := sprintf("Module '%s' must be sourced from: %s (currently using: %s)", [required_module_name, required_tagging_source, actual_source])
+    msg := sprintf("Module '%s' must be sourced from: %s (currently using: %s)", [required_module_name, required_module_source, actual_source])
 }
 
 violations[msg] {
