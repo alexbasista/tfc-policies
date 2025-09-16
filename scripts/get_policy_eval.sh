@@ -2,6 +2,8 @@
 
 # Script to get policy violation details from TFC/TFE
 #
+# API path: Run → Task Stage → Policy Evaluations → Policy Set Outcomes
+#
 # Usage: ./get_policy_eval.sh <run-id>
 #
 # Arguments:
@@ -33,6 +35,7 @@ HEADERS="Authorization: Bearer $TFE_TOKEN"
 
 # Get run details and extract task stage ID
 RUN_DETAILS=$(curl -s -H "$HEADERS" "$API_BASE/runs/$RUN_ID")
+#echo $RUN_DETAILS | jq '.'
 TASK_STAGE_ID=$(echo "$RUN_DETAILS" | jq -r '.data.relationships."task-stages".data[0].id')
 
 echo "🔍 Policy Results for Run: $RUN_ID"
