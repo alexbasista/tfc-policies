@@ -1,10 +1,8 @@
-# OPA Policy: Always Fail  
-# File: always_fail.rego
 package terraform.policies.always_fail
 
 import input.plan as plan
 
+# Simple deny rule that always triggers
 deny[msg] {
-    true
-    msg := "This is a test policy that always fails - policy evaluation is working correctly!"
+    msg := "This test policy always fails - evaluation working correctly!"
 }
