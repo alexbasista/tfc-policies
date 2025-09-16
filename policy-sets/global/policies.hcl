@@ -11,7 +11,7 @@
 # }
 
 policy "restrict_pet_length" {
-  query = "terraform.policies.random_pet_length.deny"
+  query = "data.terraform.policies.random_pet_length.deny"
   enforcement_level = "mandatory"
   description = "testing"
 }
