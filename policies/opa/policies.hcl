@@ -1,5 +1,6 @@
 policy "always_pass" {
   query             = "data.terraform.policies.always_pass.deny"
+  source    = 
   enforcement_level = "mandatory"
   description       = "OPA policy to always pass."
 }
