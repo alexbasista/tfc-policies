@@ -1,0 +1,87 @@
+import "tfconfig/v2" as tfconfig
+import "strings"
+
+# Policy parameter: set to true to allow data sources anywhere (root level or in modules)
+param module_registry_base_url default "app.terraform.io/abasista-tfc"
+param allow_data_sources default true
+
+is_registry_source = func(source) {
+    return strings.has_prefix(source, module_registry_base_url)
+}
+
+trace_resource_to_ultimate_source = func(resource_address) {
+    parts = strings.split(resource_address, ".")
+    module_parts = []
+    for parts as i, part {
+        if part == "module" and i + 1 < length(parts) {
+            module_parts = module_parts + [part]
+            module_parts = module_parts + [parts[i + 1]]
+        } else if strings.has_prefix(part, "module") {
+            break
+        }
+    }
+    
+    if length(module_parts) == 0 {
+        return null
+    }
+    
+    target_module_name = module_parts[length(module_parts) - 1]
+    
+    for tfconfig.module_calls as key, call {
+        if strings.has_suffix(key, ":" + target_module_name) {
+            expected_parent = strings.join(module_parts[0:length(module_parts)-2], ".")
+            if call.module_address == expected_parent {
+                return call.source
+            }
+        }
+    }
+    
+    return null
+}
+
+check_resource = func(address, resource) {
+    # Allow data sources anywhere if parameter is enabled
+    if resource.mode == "data" and allow_data_sources {
+        return true
+    }
+    
+    # For managed resources, enforce registry module requirement
+    ultimate_source = trace_resource_to_ultimate_source(address)
+    return ultimate_source != null and is_registry_source(ultimate_source)
+}
+
+print("=== Module Source Analysis ===")
+for tfconfig.resources as address, resource {
+    ultimate_source = trace_resource_to_ultimate_source(address)
+    print("Resource: " + address + " (type: " + resource.type + ")")
+    
+    # Check if resource is in a module by looking at the address
+    if strings.has_prefix(address, "module.") {
+        if resource.mode == "data" and allow_data_sources {
+            print("  Resource Type: DATA SOURCE (allowed anywhere)")
+            print("  Should Allow: true")
+        } else if ultimate_source != null {
+            print("  Ultimate Source: " + ultimate_source)
+            print("  Is Registry: " + string(is_registry_source(ultimate_source)))
+            print("  Should Allow: " + string(is_registry_source(ultimate_source)))
+        } else {
+            print("  Ultimate Source: null - module call not found in tracing logic")
+            print("  Should Allow: false")
+        }
+    } else {
+        print("  Resource Location: ROOT LEVEL (not in any module)")
+        if resource.mode == "data" and allow_data_sources {
+            print("  Resource Type: DATA SOURCE (allowed at root level)")
+            print("  Should Allow: true")
+        } else {
+            print("  Should Allow: false (root-level managed resources not allowed)")
+        }
+    }
+    print("")
+}
+
+main = rule {
+    all tfconfig.resources as address, resource {
+        check_resource(address, resource)
+    }
+}

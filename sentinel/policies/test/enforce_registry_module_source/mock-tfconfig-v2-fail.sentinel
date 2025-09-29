@@ -1,0 +1,188 @@
+import "strings"
+
+providers = {
+	"module.local-source-solution.module.example-local-module:random": {
+		"alias":               "",
+		"config":              {},
+		"full_name":           "registry.terraform.io/hashicorp/random",
+		"module_address":      "module.local-source-solution.module.example-local-module",
+		"name":                "random",
+		"provider_config_key": "module.local-source-solution.module.example-local-module:random",
+		"version_constraint":  "",
+	},
+	"module.local-source-solution.module.example-registry-module:random": {
+		"alias":               "",
+		"config":              {},
+		"full_name":           "registry.terraform.io/hashicorp/random",
+		"module_address":      "module.local-source-solution.module.example-registry-module",
+		"name":                "random",
+		"provider_config_key": "module.local-source-solution.module.example-registry-module:random",
+		"version_constraint":  "~> 3.7",
+	},
+}
+
+resources = {
+	"module.local-source-solution.module.example-local-module.random_pet.local_module_bad": {
+		"address": "module.local-source-solution.module.example-local-module.random_pet.local_module_bad",
+		"config": {
+			"length": {
+				"constant_value": 3,
+			},
+			"separator": {
+				"constant_value": "/",
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.local-source-solution.module.example-local-module",
+		"name":                "local_module_bad",
+		"provider_config_key": "module.local-source-solution.module.example-local-module:random",
+		"provisioners":        [],
+		"type":                "random_pet",
+	},
+	"module.local-source-solution.module.example-registry-module.random_pet.example_1": {
+		"address": "module.local-source-solution.module.example-registry-module.random_pet.example_1",
+		"config": {
+			"length": {
+				"references": [
+					"var.pet_length",
+				],
+			},
+			"prefix": {
+				"references": [
+					"var.pet_prefix",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.local-source-solution.module.example-registry-module",
+		"name":                "example_1",
+		"provider_config_key": "module.local-source-solution.module.example-registry-module:random",
+		"provisioners":        [],
+		"type":                "random_pet",
+	},
+	"module.local-source-solution.module.example-registry-module.random_pet.example_2": {
+		"address": "module.local-source-solution.module.example-registry-module.random_pet.example_2",
+		"config": {
+			"length": {
+				"references": [
+					"var.pet_length",
+				],
+			},
+			"prefix": {
+				"references": [
+					"var.pet_prefix",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.local-source-solution.module.example-registry-module",
+		"name":                "example_2",
+		"provider_config_key": "module.local-source-solution.module.example-registry-module:random",
+		"provisioners":        [],
+		"type":                "random_pet",
+	},
+}
+
+provisioners = {}
+
+variables = {
+	"module.local-source-solution.module.example-registry-module:pet_length": {
+		"default":        2,
+		"description":    "The length (in words) of the pet name.",
+		"module_address": "module.local-source-solution.module.example-registry-module",
+		"name":           "pet_length",
+	},
+	"module.local-source-solution.module.example-registry-module:pet_prefix": {
+		"default":        null,
+		"description":    "A string to prefix the pet name with.",
+		"module_address": "module.local-source-solution.module.example-registry-module",
+		"name":           "pet_prefix",
+	},
+}
+
+outputs = {
+	"module.local-source-solution.module.example-registry-module:random_pet_id_1": {
+		"depends_on":     [],
+		"description":    "ID (name) of the random pet 1.",
+		"module_address": "module.local-source-solution.module.example-registry-module",
+		"name":           "random_pet_id_1",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"random_pet.example_1.id",
+				"random_pet.example_1",
+			],
+		},
+	},
+	"module.local-source-solution.module.example-registry-module:random_pet_id_2": {
+		"depends_on":     [],
+		"description":    "ID (name) of the random pet 2.",
+		"module_address": "module.local-source-solution.module.example-registry-module",
+		"name":           "random_pet_id_2",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"random_pet.example_2.id",
+				"random_pet.example_2",
+			],
+		},
+	},
+}
+
+module_calls = {
+	"local-source-solution": {
+		"config":             {},
+		"count":              {},
+		"depends_on":         [],
+		"for_each":           {},
+		"module_address":     "",
+		"name":               "local-source-solution",
+		"source":             "../../solution-fail",
+		"version_constraint": "",
+	},
+	"module.local-source-solution:example-local-module": {
+		"config":             {},
+		"count":              {},
+		"depends_on":         [],
+		"for_each":           {},
+		"module_address":     "module.local-source-solution",
+		"name":               "example-local-module",
+		"source":             "./modules",
+		"version_constraint": "",
+	},
+	"module.local-source-solution:example-registry-module": {
+		"config": {
+			"pet_length": {
+				"constant_value": 2,
+			},
+			"pet_prefix": {
+				"constant_value": "solution",
+			},
+		},
+		"count":              {},
+		"depends_on":         [],
+		"for_each":           {},
+		"module_address":     "module.local-source-solution",
+		"name":               "example-registry-module",
+		"source":             "app.terraform.io/abasista-tfc/example-module/random",
+		"version_constraint": "3.0.1",
+	},
+}
+
+strip_index = func(addr) {
+	s = strings.split(addr, ".")
+	for s as i, v {
+		s[i] = strings.split(v, "[")[0]
+	}
+
+	return strings.join(s, ".")
+}
