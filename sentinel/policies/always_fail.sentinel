@@ -1,9 +1,7 @@
-import "strings"
-import "time"
+# Returns `false` to always fail.
 
 print("=================================")
 print("Executing always_false policy")
-print("Timestamp: " + strings.to_string(time.now))
 print("=================================")
 
 main = rule {

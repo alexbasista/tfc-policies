@@ -1,9 +1,7 @@
-import "strings"
-import "time"
+# Returns `true` to always pass.
 
 print("=================================")
 print("Executing always_pass policy")
-print("Timestamp: " + strings.to_string(time.now))
 print("=================================")
 
 main = rule {
