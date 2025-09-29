@@ -12,7 +12,6 @@
 # Environment:
 #   TFE_TOKEN     Required. API token for Terraform Cloud/Enterprise.
 
-
 set -euo pipefail
 
 TFE_TOKEN="${TFE_TOKEN:-}"
@@ -35,7 +34,6 @@ HEADERS="Authorization: Bearer $TFE_TOKEN"
 
 # Get run details and extract task stage ID
 RUN_DETAILS=$(curl -s -H "$HEADERS" "$API_BASE/runs/$RUN_ID")
-#echo $RUN_DETAILS | jq '.'
 TASK_STAGE_ID=$(echo "$RUN_DETAILS" | jq -r '.data.relationships."task-stages".data[0].id')
 
 echo "🔍 Policy Results for Run: $RUN_ID"
@@ -45,6 +43,8 @@ echo
 
 # Get policy evaluations from the task stage
 POLICY_EVALUATIONS=$(curl -s -H "$HEADERS" "$API_BASE/task-stages/$TASK_STAGE_ID/policy-evaluations")
+POLICY_EVAL_COUNT=$(echo "$POLICY_EVALUATIONS" | jq '.data | length')
+echo "📊 Found $POLICY_EVAL_COUNT policy evaluation(s)"
 
 # Print policy evaluation summary
 echo "📋 Policy Evaluations:"
@@ -52,32 +52,45 @@ echo "$POLICY_EVALUATIONS" | jq -r '.data[] | "  - \(.id) (\(.attributes."policy
 
 echo
 
-# Get policy-set-outcomes for each evaluation
-echo "📋 Policy Set Outcomes:"
-PSOUT_IDS=$(echo "$POLICY_EVALUATIONS" | jq -r '.data[].relationships."policy-set-outcomes".data[].id')
+# Process each policy evaluation and its policy set outcomes
 
-for psout_id in $PSOUT_IDS; do
+echo "$POLICY_EVALUATIONS" | jq -r '.data[] | @base64' | while IFS= read -r evaluation; do
+    eval_data=$(echo "$evaluation" | base64 --decode)
+    eval_id=$(echo "$eval_data" | jq -r '.id')
+    eval_kind=$(echo "$eval_data" | jq -r '.attributes."policy-kind"')
+    eval_status=$(echo "$eval_data" | jq -r '.attributes.status')
+    
     echo
-    echo "🔍 Policy Set Outcome: $psout_id"
-    echo "--------------------------------"
+    echo "🎯 Policy Evaluation: $eval_id ($eval_kind) - Status: $eval_status"
+    printf '=%.0s' {1..70} && echo
     
-    PSOUT_DETAILS=$(curl -s -H "$HEADERS" "$API_BASE/policy-set-outcomes/$psout_id")
+    # Get policy set outcome IDs for this specific evaluation
+    PSOUT_IDS=$(echo "$eval_data" | jq -r '.relationships."policy-set-outcomes".data[].id')
     
-    # Get the policy kind from the related policy evaluation
-    POLICY_EVAL_ID=$(echo "$PSOUT_DETAILS" | jq -r '.data.relationships."policy-evaluation".data.id')
-    POLICY_KIND=$(echo "$POLICY_EVALUATIONS" | jq -r ".data[] | select(.id == \"$POLICY_EVAL_ID\") | .attributes.\"policy-kind\"")
-    
-    echo "Policy Kind: $POLICY_KIND"
-    
-    # Extract outcomes based on policy kind
-    if [[ "$POLICY_KIND" == "sentinel" ]]; then
-        # Sentinel format: outcomes[].output[].print
-        echo "$PSOUT_DETAILS" | jq -r '.data.attributes.outcomes[] | "Policy: \(.policy_name)\nStatus: \(.status)\nOutput: \(.output[].print // "No print output")"'
-    elif [[ "$POLICY_KIND" == "opa" ]]; then
-        # OPA format: outcomes[].output[] (direct message)
-        echo "$PSOUT_DETAILS" | jq -r '.data.attributes.outcomes[] | "Policy: \(.policy_name // "Unknown")\nStatus: \(.status)\nOutput: \(.output[] // "No output")"'
-    else
-        echo "Unknown policy kind: $POLICY_KIND"
-        echo "$PSOUT_DETAILS" | jq -r '.data.attributes.outcomes[]'
+    if [[ -z "$PSOUT_IDS" ]]; then
+        echo "  No policy set outcomes found for this evaluation"
+        continue
     fi
+    
+    for psout_id in $PSOUT_IDS; do
+        echo
+        echo "🔍 Policy Set Outcome: $psout_id"
+        echo "--------------------------------"
+        
+        PSOUT_DETAILS=$(curl -s -H "$HEADERS" "$API_BASE/policy-set-outcomes/$psout_id")
+        
+        echo "Policy Kind: $eval_kind"
+        
+        # Extract outcomes based on policy kind
+        if [[ "$eval_kind" == "sentinel" ]]; then
+            # Sentinel format: outcomes[].output[].print
+            echo "$PSOUT_DETAILS" | jq -r '.data.attributes.outcomes[] | "Policy: \(.policy_name)\nStatus: \(.status)\nOutput: \(.output[].print // "No print output")"'
+        elif [[ "$eval_kind" == "opa" ]]; then
+            # OPA format: outcomes[].output[] (direct message)
+            echo "$PSOUT_DETAILS" | jq -r '.data.attributes.outcomes[] | "Policy: \(.policy_name // "Unknown")\nStatus: \(.status)\nOutput: \(.output[] // "No output")"'
+        else
+            echo "Unknown policy kind: $eval_kind"
+            echo "$PSOUT_DETAILS" | jq -r '.data.attributes.outcomes[]'
+        fi
+    done
 done

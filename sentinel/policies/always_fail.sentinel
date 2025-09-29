@@ -1,0 +1,14 @@
+import "strings"
+import "time"
+
+print("=================================")
+print("Executing always_fail policy")
+print("Timestamp:", strings.to_string(time.now))
+print("=================================")
+
+main = rule {
+  print("Evaluating main rule...")
+  print("Status: This policy always fails")
+  print("Result: ✗ FAIL")
+  false
+}
