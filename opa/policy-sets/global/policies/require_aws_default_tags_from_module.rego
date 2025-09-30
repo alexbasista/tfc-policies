@@ -5,7 +5,7 @@
 # 3. The AWS provider uses default_tags that reference the module output
 # This enforces consistent tagging across all AWS resources.
 
-package terraform.policies.tagging
+package terraform.policies.aws_default_tagging
 
 import input.plan as plan
 

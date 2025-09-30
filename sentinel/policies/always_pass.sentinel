@@ -1,0 +1,9 @@
+# Returns `true` to always pass.
+
+print("=================================")
+print("Executing always_pass policy")
+print("=================================")
+
+main = rule {
+	true
+}

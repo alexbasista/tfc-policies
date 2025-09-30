@@ -1,0 +1,290 @@
+import "strings"
+
+providers = {
+	"module.local-source-solution-pass.module.example-registry-module-1:random": {
+		"alias":               "",
+		"config":              {},
+		"full_name":           "registry.terraform.io/hashicorp/random",
+		"module_address":      "module.local-source-solution-pass.module.example-registry-module-1",
+		"name":                "random",
+		"provider_config_key": "module.local-source-solution-pass.module.example-registry-module-1:random",
+		"version_constraint":  "~> 3.7",
+	},
+	"module.local-source-solution-pass.module.example-registry-module-2:random": {
+		"alias":               "",
+		"config":              {},
+		"full_name":           "registry.terraform.io/hashicorp/random",
+		"module_address":      "module.local-source-solution-pass.module.example-registry-module-2",
+		"name":                "random",
+		"provider_config_key": "module.local-source-solution-pass.module.example-registry-module-2:random",
+		"version_constraint":  "~> 3.7",
+	},
+	"random": {
+		"alias":               "",
+		"config":              {},
+		"full_name":           "registry.terraform.io/hashicorp/random",
+		"module_address":      "",
+		"name":                "random",
+		"provider_config_key": "random",
+		"version_constraint":  "",
+	},
+}
+
+resources = {
+	"module.local-source-solution-pass.module.example-registry-module-1.random_pet.example_1": {
+		"address": "module.local-source-solution-pass.module.example-registry-module-1.random_pet.example_1",
+		"config": {
+			"length": {
+				"references": [
+					"var.pet_length",
+				],
+			},
+			"prefix": {
+				"references": [
+					"var.pet_prefix",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.local-source-solution-pass.module.example-registry-module-1",
+		"name":                "example_1",
+		"provider_config_key": "module.local-source-solution-pass.module.example-registry-module-1:random",
+		"provisioners":        [],
+		"type":                "random_pet",
+	},
+	"module.local-source-solution-pass.module.example-registry-module-1.random_pet.example_2": {
+		"address": "module.local-source-solution-pass.module.example-registry-module-1.random_pet.example_2",
+		"config": {
+			"length": {
+				"references": [
+					"var.pet_length",
+				],
+			},
+			"prefix": {
+				"references": [
+					"var.pet_prefix",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.local-source-solution-pass.module.example-registry-module-1",
+		"name":                "example_2",
+		"provider_config_key": "module.local-source-solution-pass.module.example-registry-module-1:random",
+		"provisioners":        [],
+		"type":                "random_pet",
+	},
+	"module.local-source-solution-pass.module.example-registry-module-2.random_pet.example_1": {
+		"address": "module.local-source-solution-pass.module.example-registry-module-2.random_pet.example_1",
+		"config": {
+			"length": {
+				"references": [
+					"var.pet_length",
+				],
+			},
+			"prefix": {
+				"references": [
+					"var.pet_prefix",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.local-source-solution-pass.module.example-registry-module-2",
+		"name":                "example_1",
+		"provider_config_key": "module.local-source-solution-pass.module.example-registry-module-2:random",
+		"provisioners":        [],
+		"type":                "random_pet",
+	},
+	"module.local-source-solution-pass.module.example-registry-module-2.random_pet.example_2": {
+		"address": "module.local-source-solution-pass.module.example-registry-module-2.random_pet.example_2",
+		"config": {
+			"length": {
+				"references": [
+					"var.pet_length",
+				],
+			},
+			"prefix": {
+				"references": [
+					"var.pet_prefix",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "module.local-source-solution-pass.module.example-registry-module-2",
+		"name":                "example_2",
+		"provider_config_key": "module.local-source-solution-pass.module.example-registry-module-2:random",
+		"provisioners":        [],
+		"type":                "random_pet",
+	},
+	"random_pet.should_fail_because_no_module": {
+		"address": "random_pet.should_fail_because_no_module",
+		"config": {
+			"length": {
+				"constant_value": 1,
+			},
+			"prefix": {
+				"constant_value": "_",
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "should_fail_because_no_module",
+		"provider_config_key": "random",
+		"provisioners":        [],
+		"type":                "random_pet",
+	},
+}
+
+provisioners = {}
+
+variables = {
+	"module.local-source-solution-pass.module.example-registry-module-1:pet_length": {
+		"default":        2,
+		"description":    "The length (in words) of the pet name.",
+		"module_address": "module.local-source-solution-pass.module.example-registry-module-1",
+		"name":           "pet_length",
+	},
+	"module.local-source-solution-pass.module.example-registry-module-1:pet_prefix": {
+		"default":        null,
+		"description":    "A string to prefix the pet name with.",
+		"module_address": "module.local-source-solution-pass.module.example-registry-module-1",
+		"name":           "pet_prefix",
+	},
+	"module.local-source-solution-pass.module.example-registry-module-2:pet_length": {
+		"default":        2,
+		"description":    "The length (in words) of the pet name.",
+		"module_address": "module.local-source-solution-pass.module.example-registry-module-2",
+		"name":           "pet_length",
+	},
+	"module.local-source-solution-pass.module.example-registry-module-2:pet_prefix": {
+		"default":        null,
+		"description":    "A string to prefix the pet name with.",
+		"module_address": "module.local-source-solution-pass.module.example-registry-module-2",
+		"name":           "pet_prefix",
+	},
+}
+
+outputs = {
+	"module.local-source-solution-pass.module.example-registry-module-1:random_pet_id_1": {
+		"depends_on":     [],
+		"description":    "ID (name) of the random pet 1.",
+		"module_address": "module.local-source-solution-pass.module.example-registry-module-1",
+		"name":           "random_pet_id_1",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"random_pet.example_1.id",
+				"random_pet.example_1",
+			],
+		},
+	},
+	"module.local-source-solution-pass.module.example-registry-module-1:random_pet_id_2": {
+		"depends_on":     [],
+		"description":    "ID (name) of the random pet 2.",
+		"module_address": "module.local-source-solution-pass.module.example-registry-module-1",
+		"name":           "random_pet_id_2",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"random_pet.example_2.id",
+				"random_pet.example_2",
+			],
+		},
+	},
+	"module.local-source-solution-pass.module.example-registry-module-2:random_pet_id_1": {
+		"depends_on":     [],
+		"description":    "ID (name) of the random pet 1.",
+		"module_address": "module.local-source-solution-pass.module.example-registry-module-2",
+		"name":           "random_pet_id_1",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"random_pet.example_1.id",
+				"random_pet.example_1",
+			],
+		},
+	},
+	"module.local-source-solution-pass.module.example-registry-module-2:random_pet_id_2": {
+		"depends_on":     [],
+		"description":    "ID (name) of the random pet 2.",
+		"module_address": "module.local-source-solution-pass.module.example-registry-module-2",
+		"name":           "random_pet_id_2",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"random_pet.example_2.id",
+				"random_pet.example_2",
+			],
+		},
+	},
+}
+
+module_calls = {
+	"local-source-solution-pass": {
+		"config":             {},
+		"count":              {},
+		"depends_on":         [],
+		"for_each":           {},
+		"module_address":     "",
+		"name":               "local-source-solution-pass",
+		"source":             "../../solution-pass",
+		"version_constraint": "",
+	},
+	"module.local-source-solution-pass:example-registry-module-1": {
+		"config": {
+			"pet_length": {
+				"constant_value": 2,
+			},
+			"pet_prefix": {
+				"constant_value": "solution",
+			},
+		},
+		"count":              {},
+		"depends_on":         [],
+		"for_each":           {},
+		"module_address":     "module.local-source-solution-pass",
+		"name":               "example-registry-module-1",
+		"source":             "app.terraform.io/abasista-tfc/example-module/random",
+		"version_constraint": "3.0.1",
+	},
+	"module.local-source-solution-pass:example-registry-module-2": {
+		"config": {
+			"pet_length": {
+				"constant_value": 2,
+			},
+			"pet_prefix": {
+				"constant_value": "solution",
+			},
+		},
+		"count":              {},
+		"depends_on":         [],
+		"for_each":           {},
+		"module_address":     "module.local-source-solution-pass",
+		"name":               "example-registry-module-2",
+		"source":             "app.terraform.io/abasista-tfc/example-module/random",
+		"version_constraint": "3.0.1",
+	},
+}
+
+strip_index = func(addr) {
+	s = strings.split(addr, ".")
+	for s as i, v {
+		s[i] = strings.split(v, "[")[0]
+	}
+
+	return strings.join(s, ".")
+}

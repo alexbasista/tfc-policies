@@ -1,0 +1,9 @@
+# Returns `false` to always fail.
+
+print("=================================")
+print("Executing always_false policy")
+print("=================================")
+
+main = rule {
+	false
+}
