@@ -24,7 +24,7 @@ violations = filter random_pets as address, pet {
 
 # Print violations
 for violations as address, pet {
-    print(address, "has length", pet.change.after.length, "but must be greater than", min_length)
+    print(address, "has length", int(pet.change.after.length), "but must be greater than", int(min_length))
 }
 
 # Main rule
