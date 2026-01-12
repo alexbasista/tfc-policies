@@ -1,0 +1,35 @@
+import "tfplan/v2" as tfplan
+
+# Define parameters
+param min_length default 3
+
+# Get all random_pet resources being created or updated
+random_pets = filter tfplan.resource_changes as _, rc {
+    rc.type is "random_pet" and
+    rc.mode is "managed" and
+    (rc.change.actions contains "create" or
+     rc.change.actions contains "update" or
+     rc.change.actions contains "no-op")
+}
+
+# Validation function
+validate_length = func(resource) {
+    return resource.change.after.length > min_length
+}
+
+# Collect violations for messaging
+violations = filter random_pets as address, pet {
+    not validate_length(pet)
+}
+
+# Print violations
+for violations as address, pet {
+    print(address, "has length", pet.change.after.length, "but must be greater than", min_length)
+}
+
+# Main rule
+main = rule {
+    all random_pets as _, pet {
+        validate_length(pet)
+    }
+}
