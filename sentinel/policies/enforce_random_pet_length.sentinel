@@ -1,3 +1,6 @@
+# This policy enforces that random_pet resources have a minimum length.
+# The length must be greater than or equal to the configured min_length parameter.
+
 import "tfplan/v2" as tfplan
 
 # Define parameters
