@@ -35,4 +35,4 @@ main = rule {
     all random_pets as _, pet {
         validate_length(pet)
     }
-} description "Enforces that random_pet resources have a length greater than or equal to the minimum required length"
+}
