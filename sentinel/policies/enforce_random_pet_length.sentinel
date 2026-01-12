@@ -14,7 +14,7 @@ random_pets = filter tfplan.resource_changes as _, rc {
 
 # Validation function
 validate_length = func(resource) {
-    return resource.change.after.length > min_length
+    return resource.change.after.length >= min_length
 }
 
 # Collect violations for messaging
@@ -24,7 +24,7 @@ violations = filter random_pets as address, pet {
 
 # Print violations
 for violations as address, pet {
-    print(address, "has length", int(pet.change.after.length), "but must be greater than", int(min_length))
+    print(address, "has length", int(pet.change.after.length), "but must be greater than or equal to", int(min_length))
 }
 
 # Main rule
